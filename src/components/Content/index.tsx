@@ -4,11 +4,16 @@ import AddTopic from "./AddTopic";
 import useMeetupContract from "~/hooks/useMeetupContract";
 import useAccount from "~/hooks/useAccount";
 import { fromWei } from "web3-utils";
+import { useEffect } from "react";
 
 const Content = () => {
-  const { organizers, balance, withdrawBalance } =
+  const { init, organizers, balance, withdrawBalance } =
     useMeetupContract();
   const { address } = useAccount();
+
+  useEffect(() => {
+    init();
+  },[init])
 
   const isAnOrganizer = address && organizers.includes(address);
   return (

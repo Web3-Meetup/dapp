@@ -3,6 +3,7 @@ import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '~/store'
 
 interface MeetupState {
+  isInitialized: boolean;
   topics: Topic[],
   isLoading: boolean,
   organizers: string[];
@@ -10,6 +11,7 @@ interface MeetupState {
 }
 
 const initialState: MeetupState = {
+  isInitialized: false,
   topics: [],
   isLoading: false,
   organizers: [],
@@ -22,8 +24,12 @@ export const meetupSlice = createSlice({
   name: sliceName,
   initialState,
   reducers: {
-    setTopics: (state, action: PayloadAction<Topic[]> ) => {
-      state.topics = action.payload;
+    init: (state, action: PayloadAction<{topics: Topic[], organizers:string[], balance: number}>) => {
+      const { topics, organizers, balance } = action.payload;
+      state.topics = topics;
+      state.organizers = organizers;
+      state.balance = balance;
+      state.isInitialized = true;
     },
     addTopic: (state, action: PayloadAction<Topic>) => { 
       state.topics.push(action.payload);
@@ -34,16 +40,13 @@ export const meetupSlice = createSlice({
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    setOrganizers: (state, action: PayloadAction<string[]>) => {
-      state.organizers = action.payload;
-    },
-    setBalance: (state, action: PayloadAction<number>) => {
+    updateBalance: (state, action: PayloadAction<number>) => {
       state.balance = action.payload;
     }
   },
 })
 
-export const { setTopics, addTopic, likeTopic, setIsLoading, setOrganizers, setBalance } = meetupSlice.actions
+export const { addTopic, likeTopic, setIsLoading, updateBalance, init } = meetupSlice.actions
 
 const selectMeetup = (state: RootState) => state[sliceName];
 
@@ -51,6 +54,7 @@ export const selectTopics = createSelector(selectMeetup, (meetup) => meetup.topi
 export const selectIsLoading = createSelector(selectMeetup, (meetup) => meetup.isLoading);
 export const selectOrganizers = createSelector(selectMeetup, (meetup) => meetup.organizers);
 export const selectBalance = createSelector(selectMeetup, (meetup) => meetup.balance);
+export const selectIsInitialized = createSelector(selectMeetup, (meetup) => meetup.isInitialized);
 
 
 export default meetupSlice.reducer

@@ -6,15 +6,15 @@ import {
   selectTopics,
   selectOrganizers,
   selectBalance,
+  selectIsInitialized,
   setIsLoading,
   addTopic as addMeetupTopic,
   likeTopic as likeMeetupTopic,
-  setTopics,
-  setOrganizers,
-  setBalance,
+  init as initMeetup,
+  updateBalance,
 } from "~/store/features/meetup/meetupSlice";
 import * as meetupContract from "~/utils/meetupContract";
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import useAccount from "~/hooks/useAccount";
 import { batch } from "react-redux";
 
@@ -23,6 +23,7 @@ const useMeetupContract = () => {
   const [error, setError] = useState<string | null>(null);
 
   const isLoading = useAppSelector(selectIsLoading);
+  const isInitialized = useAppSelector(selectIsInitialized);
   const topics = useAppSelector(selectTopics);
   const organizers = useAppSelector(selectOrganizers);
   const balance = useAppSelector(selectBalance);
@@ -55,7 +56,7 @@ const useMeetupContract = () => {
                 likes: 0,
               })
             );
-            dispatch(setBalance(updatedBalance));
+            dispatch(updateBalance(updatedBalance));
           });
         });
         dispatch(setIsLoading(false));
@@ -75,7 +76,7 @@ const useMeetupContract = () => {
           );
           batch(() => {
             dispatch(likeMeetupTopic(topicIndex));
-            dispatch(setBalance(updatedBalance));
+            dispatch(updateBalance(updatedBalance));
           });
         });
         dispatch(setIsLoading(false));
@@ -92,14 +93,16 @@ const useMeetupContract = () => {
         const updatedBalance = await getBalance(
           meetupContract.contract.options.address
         );
-        dispatch(setBalance(updatedBalance));
+        dispatch(updateBalance(updatedBalance));
       });
       dispatch(setIsLoading(false));
     }
   }, [userAddress, dispatch]);
 
-  useEffect(() => {
-    (async () => {
+  const init = useCallback(async () => {
+      if (isInitialized) {
+        return;
+      }
       dispatch(setIsLoading(true));
       await catchError(async () => {
         const topics = await meetupContract.getTopics();
@@ -107,16 +110,11 @@ const useMeetupContract = () => {
         const balance = await getBalance(
           meetupContract.contract.options.address
         );
-        batch(() => {
-          dispatch(setTopics(topics));
-          dispatch(setOrganizers(organizers));
-          dispatch(setBalance(balance));
-        });
+
+        dispatch(initMeetup({ organizers, topics, balance }));
       });
       dispatch(setIsLoading(false));
-    })();
-    return;
-  }, [dispatch]);
+  }, [dispatch, isInitialized]);
 
   return {
     isLoading,
@@ -127,6 +125,7 @@ const useMeetupContract = () => {
     addTopic,
     likeTopic,
     withdrawBalance,
+    init
   };
 };
 
