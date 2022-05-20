@@ -10,7 +10,7 @@ A simple frontend React application to interact with this [Smart Contract](https
 
 ## Setup
 
-Rename `.env.local.sample` to `.env.local` and set the `REACT_APP_MEETUP_CONTRACT_ADDRESS` address to the smart contract address of Meetup (es: [0x816d702F44d7A0cbd0B2b362b3C8724b9328203f](https://mumbai.polygonscan.com/address/0x816d702F44d7A0cbd0B2b362b3C8724b9328203f)).
+Rename `.env.local.sample` to `.env.local` and set the `REACT_APP_MEETUP_CONTRACT_ADDRESS` address to the smart contract address of Meetup (es: [0xc68EafAf44bF73cc7469E1aFC0e3a4a687a55961](https://mumbai.polygonscan.com/address/0xc68EafAf44bF73cc7469E1aFC0e3a4a687a55961)).
 
 ## Run
 

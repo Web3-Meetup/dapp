@@ -1,5 +1,5 @@
 import meetupAbi from "~/abi/meetup";
-import payOrganizersAbi from "~/abi/payOrganizers"
+import organizationAbi from "~/abi/organization"
 import { web3Client } from "~/utils/w3";
 import { toWei } from "web3-utils";
 import { EventData } from 'web3-eth-contract';
@@ -65,12 +65,12 @@ export const likeTopic = async (userAddress: string, topicIndex: number) => {
 export const getOrganizers = async ():Promise<string[]> => {
   try {
     // @TODO maybe we can export getOrganizers directly from meetup contract to avoid double call client side
-    const payOrganizersContractAddress = await contract.methods.payOrganizers().call();
-    const payOrganizersContract = new web3Client.eth.Contract(
-      payOrganizersAbi,
-      payOrganizersContractAddress
+    const organizationContractAddress = await contract.methods.organization().call();
+    const organizationContract = new web3Client.eth.Contract(
+      organizationAbi,
+      organizationContractAddress
     );
-    return await payOrganizersContract.methods.getOrganizers().call();
+    return await organizationContract.methods.getOrganizers().call();
   }catch (e) {
     throw Error("Cannot get organizers");
   }
