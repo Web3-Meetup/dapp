@@ -4,6 +4,11 @@ const abiContract:AbiItem[] = [
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
         "internalType": "address[]",
         "name": "_organizers",
         "type": "address[]"
@@ -266,7 +271,7 @@ const abiContract:AbiItem[] = [
   },
   {
     "stateMutability": "payable",
-    // @ts-expect-error @TODO strange
+    // @ts-expect-error
     "type": "receive",
     "payable": true
   },
@@ -278,6 +283,20 @@ const abiContract:AbiItem[] = [
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "getName",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",

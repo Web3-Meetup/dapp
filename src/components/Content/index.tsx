@@ -7,7 +7,7 @@ import { fromWei } from "web3-utils";
 import { useEffect } from "react";
 
 const Content = () => {
-  const { init, organizers, balance, withdrawBalance } =
+  const { init, organizers, balance, error, withdrawBalance } =
     useMeetupContract();
   const { address } = useAccount();
 
@@ -18,6 +18,7 @@ const Content = () => {
   const isAnOrganizer = address && organizers.includes(address);
   return (
     <>
+      { error && <div className="notification is-danger">{error}</div> }
       <Navbar />
       <div className="container mt-6">
         <div className="level">

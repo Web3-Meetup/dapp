@@ -4,8 +4,8 @@ const abiContract:AbiItem[] = [
   {
     "inputs": [
       {
-        "internalType": "contract PayOrganizers",
-        "name": "_payOrganizers",
+        "internalType": "contract Organization",
+        "name": "_organization",
         "type": "address"
       }
     ],
@@ -136,7 +136,8 @@ const abiContract:AbiItem[] = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
@@ -155,7 +156,8 @@ const abiContract:AbiItem[] = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
@@ -197,20 +199,22 @@ const abiContract:AbiItem[] = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
-    "name": "payOrganizers",
+    "name": "organization",
     "outputs": [
       {
-        "internalType": "contract PayOrganizers",
+        "internalType": "contract Organization",
         "name": "",
         "type": "address"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
@@ -265,7 +269,8 @@ const abiContract:AbiItem[] = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
@@ -294,7 +299,8 @@ const abiContract:AbiItem[] = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
@@ -307,7 +313,8 @@ const abiContract:AbiItem[] = [
     "name": "addTopic",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
+    "type": "function",
+    "payable": true
   },
   {
     "inputs": [],
@@ -320,7 +327,8 @@ const abiContract:AbiItem[] = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
@@ -333,7 +341,8 @@ const abiContract:AbiItem[] = [
     "name": "like",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
+    "type": "function",
+    "payable": true
   },
   {
     "inputs": [],
