@@ -5,10 +5,22 @@ import useMeetupContract from "~/hooks/useMeetupContract";
 import useAccount from "~/hooks/useAccount";
 import { fromWei } from "web3-utils";
 import { useEffect } from "react";
+import { useGetMeetupByIdQuery } from "~/services/meetup";
+import { useParams } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+
 
 const Content = () => {
+
+  const { meetupId } = useParams();
+
+  const { data } = useGetMeetupByIdQuery(meetupId || skipToken);
+
   const { init, organizers, balance, error, withdrawBalance } =
-    useMeetupContract();
+    useMeetupContract({
+      contractAddress: data?.smartcontractAddress
+    });
+
   const { address } = useAccount();
 
   useEffect(() => {
@@ -24,7 +36,7 @@ const Content = () => {
         <div className="level">
           <div className="level-left">
             <div className="level-item">
-              <h1 className="title is-1">Cryptocose Meetup</h1>
+              <h1 className="title is-1">Cryptostuff Meetup</h1>
             </div>
           </div>
           {isAnOrganizer && (
@@ -34,10 +46,10 @@ const Content = () => {
               </div>
               <div className="level-item">
                 <button
-                  className="button is-success ml-3"
+                  className="button ml-3"
                   onClick={withdrawBalance}
                 >
-                  Rimborsa organizzatori
+                  Withdraw balance
                 </button>
               </div>
             </div>
@@ -45,18 +57,18 @@ const Content = () => {
         </div>
 
         <h2 className="subtitle">
-          Organizzatore:{" "}
+          Organization:{" "}
           <span className="is-underlined">L'occhio di Horus DAO</span>
         </h2>
         <div className="content is-large">
           <div>
-            <strong>Data:</strong> 15 Aprile 2022
+            <strong>Date:</strong> 15 April 2022
           </div>
           <div>
-            <strong>Ora:</strong> 18:00
+            <strong>Time:</strong> 18:00
           </div>
           <div>
-            <strong>Partecipanti:</strong> 12
+            <strong>Attenders:</strong> 12
           </div>
         </div>
         <p className="mt-2">

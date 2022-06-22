@@ -2,7 +2,7 @@ import meetupAbi from "~/abi/meetup";
 import organizationAbi from "~/abi/organization"
 import { web3Client } from "~/utils/w3";
 import { toWei } from "web3-utils";
-import { EventData } from 'web3-eth-contract';
+import { Contract, EventData } from 'web3-eth-contract';
 
 const CONTRACT_ADDRESS = process.env.REACT_APP_MEETUP_CONTRACT_ADDRESS!;
 
@@ -17,12 +17,14 @@ interface Topic {
   message: string;
 }
 
-export const contract = new web3Client.eth.Contract(
-  meetupAbi,
-  CONTRACT_ADDRESS
-);
+export const init = (contractAddress: string) => {
+  return new web3Client.eth.Contract(
+    meetupAbi,
+    CONTRACT_ADDRESS
+  )
+}
 
-export const getTopics = async (): Promise<Topic[]> => {
+export const getTopics = async (contract: Contract): Promise<Topic[]> => {
   try {
     const topicsCount = await contract.methods.getTopicsCount().call();
     const topics = [];
@@ -40,7 +42,7 @@ export const getTopics = async (): Promise<Topic[]> => {
   }
 };
 
-export const addTopic = async (userAddress: string, message: string) => {
+export const addTopic = async (contract: Contract, userAddress: string, message: string) => {
   try {
     await contract.methods.addTopic(message).send({
       from: userAddress,
@@ -51,7 +53,7 @@ export const addTopic = async (userAddress: string, message: string) => {
   }
 };
 
-export const likeTopic = async (userAddress: string, topicIndex: number) => {
+export const likeTopic = async (contract: Contract, userAddress: string, topicIndex: number) => {
   try {
     await contract.methods.like(topicIndex).send({
       from: userAddress,
@@ -62,7 +64,7 @@ export const likeTopic = async (userAddress: string, topicIndex: number) => {
   }
 };
 
-export const getOrganizers = async ():Promise<string[]> => {
+export const getOrganizers = async (contract: Contract):Promise<string[]> => {
   try {
     // @TODO maybe we can export getOrganizers directly from meetup contract to avoid double call client side
     const organizationContractAddress = await contract.methods.organization().call();
@@ -76,7 +78,7 @@ export const getOrganizers = async ():Promise<string[]> => {
   }
 }
 
-export const withdrawBalance = async (userAddress: string) => {
+export const withdrawBalance = async (contract: Contract, userAddress: string) => {
   try {
     await contract.methods.withdraw().send({
       from: userAddress,

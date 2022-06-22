@@ -13,13 +13,12 @@ const AddTopic = () => {
       <div className="card-content">
         <div className="content">
           <label className="label">
-            Proponi un argomento o sostieni il meetup con un saluto!
+            Do you want to ask something?
           </label>
           <div className="content is-small mt-3">
-            Il numero massimo di argomenti consentiti per questo meetup è{" "}
-            <strong>{MAX_TOPICS_COUNT}</strong>, restano ancora{" "}
-            <strong>{MAX_TOPICS_COUNT - topics.length}</strong> argomenti
-            disponibili.<br /> Il costo per questa operazione è di <strong>0.5 Matic</strong>
+            The total number of questions for this meetup is{" "}
+            <strong>{MAX_TOPICS_COUNT}</strong>, there are only {" "}
+            <strong>{MAX_TOPICS_COUNT - topics.length}</strong> questions available.<br /> You need to pay for each question <strong>0.5 Matic</strong>
           </div>
           <div className="field has-addons">
             <div className="control is-expanded">
@@ -27,7 +26,7 @@ const AddTopic = () => {
                 disabled={!canSubmitANewTopic}
                 className="input"
                 type="text"
-                placeholder="es: Vorrei parlare di Luna"
+                placeholder="es: I'd like to know what do you think about.."
                 value={topicMessage}
                 onChange={(e) => setTopicMessage(e.currentTarget.value)}
               />
@@ -39,7 +38,7 @@ const AddTopic = () => {
                 className="button is-primary"
                 onClick={() => addTopic(topicMessage)}
               >
-                Invia
+                Send
               </button>
             </div>
           </div>
