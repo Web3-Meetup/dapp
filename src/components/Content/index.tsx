@@ -4,7 +4,6 @@ import AddTopic from "./AddTopic";
 import useMeetupContract from "~/hooks/useMeetupContract";
 import useAccount from "~/hooks/useAccount";
 import { fromWei } from "web3-utils";
-import { useEffect } from "react";
 import { useGetMeetupByIdQuery } from "~/services/meetup";
 import { useParams } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
