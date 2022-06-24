@@ -55,10 +55,9 @@ export const isPolygonChain = async () => {
 export const connectToPolygonChain = async () => {
   const client = getWallet();
   try {
-    // request permission trigger open mask estension to open and insert password
+    // request account open mask estension
     await client.request({
-      method: "wallet_requestPermissions",
-      params: [{ eth_accounts: {} }],
+      method: "eth_requestAccounts",
     });
     await client.request({
       method: "wallet_switchEthereumChain",
