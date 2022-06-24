@@ -4,8 +4,6 @@ import { web3Client } from "~/utils/w3";
 import { toWei } from "web3-utils";
 import { Contract, EventData } from 'web3-eth-contract';
 
-const CONTRACT_ADDRESS = process.env.REACT_APP_MEETUP_CONTRACT_ADDRESS!;
-
 const TOPIC_COST = process.env.REACT_APP_TOPIC_COST || "0.5";
 const LIKE_COST = process.env.REACT_APP_LIKE_COST || "0.1";
 
@@ -20,7 +18,7 @@ interface Topic {
 export const init = (contractAddress: string) => {
   return new web3Client.eth.Contract(
     meetupAbi,
-    CONTRACT_ADDRESS
+    contractAddress
   )
 }
 

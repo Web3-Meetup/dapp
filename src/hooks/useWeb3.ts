@@ -1,16 +1,14 @@
+import { selectConnectionStatus } from './../store/features/wallet/walletSlice';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '~/store/hooks';
 import { useCallback, useEffect, useState } from "react";
+import { setConnectionStatus } from "~/store/features/wallet/walletSlice";
 import * as wallet from "~/utils/wallet";
-
-type ConnectionStatus =
-  | "NOT_CONNECTED" // user not connected to any chain
-  | "CONNECTED" // user connected to Polygon chain
-  | "PENDING" // user is connecting a chain
-  | "WRONG_CHAIN"; // user is connected to a different chain (!= Polygon)
 
 const useWeb3 = () => {
   const [isMetamaskAvailable, setIsMetamaskAvailable] = useState(false);
-  const [connectionStatus, setConnectionStatus] =
-    useState<ConnectionStatus>("NOT_CONNECTED");
+  const dispatch = useAppDispatch();
+  const connectionStatus = useSelector(selectConnectionStatus);
 
   useEffect(() => {
     try {
@@ -25,33 +23,56 @@ const useWeb3 = () => {
   useEffect(() => {
     if (isMetamaskAvailable) {
       const meta = wallet.getWallet();
+
       if (meta.isConnected()) {
-        wallet.isPolygonChain().then((isPolygonChain) => {
-          isPolygonChain
-            ? setConnectionStatus("CONNECTED")
-            : setConnectionStatus("WRONG_CHAIN");
-        });
+        (async () => {
+          try {
+            const isPolygonChain = await wallet.isPolygonChain();
+            if (isPolygonChain) {
+              return dispatch(
+                setConnectionStatus("CONNECTED")
+              )
+            }
+            return dispatch(
+              setConnectionStatus("WRONG_CHAIN")
+            )
+          } catch(e) {
+            dispatch(
+              setConnectionStatus("NOT_CONNECTED")
+            )
+          }
+        })();
       }
 
       const handleClientConnect = ({ chainId }: { chainId: string }) => {
         if (chainId === wallet.BLOCKCHAIN.id) {
-          setConnectionStatus("CONNECTED");
+          dispatch(
+            setConnectionStatus("CONNECTED")
+          )
         } else {
-          setConnectionStatus("WRONG_CHAIN");
+          dispatch(
+            setConnectionStatus("WRONG_CHAIN")
+          )
         }
       };
 
       const handleClientDisconnect = ({ chainId }: { chainId: string }) => {
         if (chainId === wallet.BLOCKCHAIN.id) {
-          setConnectionStatus("NOT_CONNECTED");
+          dispatch(
+            setConnectionStatus("NOT_CONNECTED")
+          )
         }
       };
 
       const handleChangeChain = (chainId: string) => {
         if (chainId === wallet.BLOCKCHAIN.id) {
-          setConnectionStatus("CONNECTED");
+          dispatch(
+            setConnectionStatus("CONNECTED")
+          )
         } else {
-          setConnectionStatus("WRONG_CHAIN");
+          dispatch(
+            setConnectionStatus("WRONG_CHAIN")
+          )
         }
       };
 
@@ -72,15 +93,16 @@ const useWeb3 = () => {
         meta.removeListener("accountsChanged", handleChangedAccount);
       };
     }
-  }, [isMetamaskAvailable]);
+  }, [isMetamaskAvailable, dispatch]);
 
   const connectToChain = useCallback(() => {
     (async () => {
       try {
         setConnectionStatus("PENDING");
         await wallet.connectToPolygonChain();
+        setConnectionStatus("CONNECTED");
       } catch (e) {
-        alert((e as Error).message);
+        setConnectionStatus("NOT_CONNECTED");
       }
     })();
   }, []);

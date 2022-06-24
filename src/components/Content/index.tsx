@@ -8,52 +8,62 @@ import { useEffect } from "react";
 import { useGetMeetupByIdQuery } from "~/services/meetup";
 import { useParams } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-
+import Loading from "../Loading";
+import { formatDate } from "~/utils/date";
+import Markdown from "markdown-to-jsx";
 
 const Content = () => {
-
+  // es: VugnTotPu_FVnqMidcLZyqmgp1kK-YIN3LodmM430UQ
   const { meetupId } = useParams();
 
   const { data } = useGetMeetupByIdQuery(meetupId || skipToken);
 
-  const { init, organizers, balance, error, withdrawBalance } =
-    useMeetupContract({
-      contractAddress: data?.smartcontractAddress
-    });
+  const { organizers, balance, error, withdrawBalance } = useMeetupContract({
+    contractAddress: data?.smartcontractAddress,
+  });
 
   const { address } = useAccount();
 
-  useEffect(() => {
-    init();
-  },[init])
-
   const isAnOrganizer = address && organizers.includes(address);
+
+  if (!data) {
+    return <Loading />;
+  }
+
   return (
     <>
-      { error && <div className="notification is-danger">{error}</div> }
+      {error && <div className="notification is-danger">{error}</div>}
+      {isAnOrganizer && (
+        <div className="notification is-success">
+          <div className="level">
+            <div className="level-left">
+              <div className="level-item">
+                <p className="subtitle is-5">
+                  Welcome <strong>Organizer</strong>!
+                </p>
+              </div>
+            </div>
+            <div className="level-right">
+              <div className="level-item">
+                <strong className="is-size-3">{fromWei(balance.toString(), "ether")}</strong> MATIC
+              </div>
+              <div className="level-item">
+                <button className="button ml-3" onClick={withdrawBalance}>
+                  Withdraw
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <Navbar />
       <div className="container mt-6">
         <div className="level">
           <div className="level-left">
             <div className="level-item">
-              <h1 className="title is-1">Cryptostuff Meetup</h1>
+              <h1 className="title is-1">{data.title}</h1>
             </div>
           </div>
-          {isAnOrganizer && (
-            <div className="level-right">
-              <div className="level-item">
-                <strong>{fromWei(balance.toString(), "ether")} MATIC</strong>
-              </div>
-              <div className="level-item">
-                <button
-                  className="button ml-3"
-                  onClick={withdrawBalance}
-                >
-                  Withdraw balance
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         <h2 className="subtitle">
@@ -62,31 +72,24 @@ const Content = () => {
         </h2>
         <div className="content is-large">
           <div>
-            <strong>Date:</strong> 15 April 2022
+            <strong>Date:</strong> {formatDate(data.date, "PPPP")}
           </div>
           <div>
-            <strong>Time:</strong> 18:00
+            <strong>Time:</strong> {formatDate(data.date, "p")}
           </div>
           <div>
-            <strong>Attenders:</strong> 12
+            <strong>Attenders:</strong> TBD
           </div>
         </div>
         <p className="mt-2">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae
-          enim euismod, posuere lacus nec, ultrices nisl. Etiam metus odio,
-          cursus sed accumsan vel, sagittis rhoncus ex. Sed non varius nulla.
-          Duis quis consequat ante, ut semper tortor. Phasellus in ultricies
-          nulla, vel posuere enim. Maecenas sagittis lobortis venenatis. Donec
-          et gravida turpis. Donec tempor nisi eget sem faucibus sagittis.
-          Pellentesque lobortis diam et enim rhoncus maximus. Pellentesque ut
-          erat imperdiet, malesuada augue eget, laoreet diam.
+          <Markdown>{data.desc}</Markdown>
         </p>
         <div className="columns mt-6">
           <div className="column is-three-fifths">
-            <Topics />
+            <Topics meetupId={meetupId} />
           </div>
           <div className="column">
-            <AddTopic />
+            <AddTopic meetupId={meetupId} />
           </div>
         </div>
       </div>

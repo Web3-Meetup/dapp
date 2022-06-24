@@ -1,13 +1,12 @@
-import { Contract } from 'web3-eth-contract';
+import { Contract } from "web3-eth-contract";
 import { getBalance } from "~/utils/w3";
 import { useAppDispatch, useAppSelector } from "~/store/hooks";
-import { Topic } from "~/store/features/meetup/types";
+import type { Topic } from "~/services/meetup/types";
 import {
   selectIsLoading,
   selectTopics,
   selectOrganizers,
   selectBalance,
-  selectIsInitialized,
   setIsLoading,
   addTopic as addMeetupTopic,
   likeTopic as likeMeetupTopic,
@@ -15,12 +14,12 @@ import {
   updateBalance,
 } from "~/store/features/meetup/meetupSlice";
 import * as meetupContract from "~/utils/meetupContract";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import useAccount from "~/hooks/useAccount";
 import { batch } from "react-redux";
 
 interface Params {
-  contractAddress?: string
+  contractAddress?: string;
 }
 
 const useMeetupContract = ({ contractAddress }: Params) => {
@@ -29,7 +28,6 @@ const useMeetupContract = ({ contractAddress }: Params) => {
   const contract = useRef<Contract>();
 
   const isLoading = useAppSelector(selectIsLoading);
-  const isInitialized = useAppSelector(selectIsInitialized);
   const topics = useAppSelector(selectTopics);
   const organizers = useAppSelector(selectOrganizers);
   const balance = useAppSelector(selectBalance);
@@ -53,7 +51,11 @@ const useMeetupContract = ({ contractAddress }: Params) => {
       }
       dispatch(setIsLoading(true));
       await catchError(async () => {
-        await meetupContract.addTopic(currentContract, userAddress, topicMessage);
+        await meetupContract.addTopic(
+          currentContract,
+          userAddress,
+          topicMessage
+        );
         const updatedBalance = await getBalance(
           currentContract.options.address
         );
@@ -81,7 +83,11 @@ const useMeetupContract = ({ contractAddress }: Params) => {
       }
       dispatch(setIsLoading(true));
       await catchError(async () => {
-        await meetupContract.likeTopic(currentContract, userAddress, topicIndex);
+        await meetupContract.likeTopic(
+          currentContract,
+          userAddress,
+          topicIndex
+        );
         const updatedBalance = await getBalance(
           currentContract.options.address
         );
@@ -103,16 +109,15 @@ const useMeetupContract = ({ contractAddress }: Params) => {
     dispatch(setIsLoading(true));
     await catchError(async () => {
       await meetupContract.withdrawBalance(currentContract, userAddress);
-      const updatedBalance = await getBalance(
-        currentContract.options.address
-      );
+      const updatedBalance = await getBalance(currentContract.options.address);
       dispatch(updateBalance(updatedBalance));
     });
     dispatch(setIsLoading(false));
   }, [userAddress, dispatch]);
 
-  const init = useCallback(async () => {
-      if (isInitialized || !contractAddress) {
+  useEffect(() => {
+    (async () => {
+      if (!contractAddress) {
         return;
       }
       dispatch(setIsLoading(true));
@@ -120,14 +125,13 @@ const useMeetupContract = ({ contractAddress }: Params) => {
       await catchError(async () => {
         const topics = await meetupContract.getTopics(newContract);
         const organizers = await meetupContract.getOrganizers(newContract);
-        const balance = await getBalance(
-          newContract.options.address
-        );
+        const balance = await getBalance(newContract.options.address);
         contract.current = newContract;
         dispatch(initMeetup({ organizers, topics, balance }));
       });
       dispatch(setIsLoading(false));
-  }, [dispatch, isInitialized, contractAddress]);
+    })();
+  }, [contractAddress,dispatch]);
 
   return {
     isLoading,
@@ -138,7 +142,6 @@ const useMeetupContract = ({ contractAddress }: Params) => {
     addTopic,
     likeTopic,
     withdrawBalance,
-    init
   };
 };
 

@@ -55,6 +55,11 @@ export const isPolygonChain = async () => {
 export const connectToPolygonChain = async () => {
   const client = getWallet();
   try {
+    // request permission trigger open mask estension to open and insert password
+    await client.request({
+      method: "wallet_requestPermissions",
+      params: [{ eth_accounts: {} }],
+    });
     await client.request({
       method: "wallet_switchEthereumChain",
       params: [{ chainId: BLOCKCHAIN.id }],
@@ -63,7 +68,7 @@ export const connectToPolygonChain = async () => {
     // This error code indicates that the chain has not been added to MetaMask.
     if ((e as JsonRPCError).code === 4902) {
       try {
-        await window.ethereum.request({
+        return await window.ethereum.request({
           method: "wallet_addEthereumChain",
           params: [
             {

@@ -26,7 +26,6 @@ ReactDOM.render(
             }
           />
         </Routes>
-        <App />
       </Router>
     </Provider>
   </React.StrictMode>,

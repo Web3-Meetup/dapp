@@ -1,28 +1,44 @@
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 import cn from "classnames/bind";
 import useAccount from "~/hooks/useAccount";
 import useMeetupContract from "~/hooks/useMeetupContract";
+import { useGetMeetupByIdQuery } from "~/services/meetup";
 import styles from "./index.module.scss";
 import Stars from "./Stars";
 
 const cx = cn.bind(styles);
 
-const Topics = () => {
-  const { topics, likeTopic, isLoading } = useMeetupContract();
+interface Props {
+  meetupId?: string;
+}
+const Topics = ({ meetupId }: Props) => {
+  const { data } = useGetMeetupByIdQuery(meetupId || skipToken);
+  const { topics, likeTopic, isLoading } = useMeetupContract({
+    contractAddress: data?.smartcontractAddress
+  });
   const { address } = useAccount();
 
   // sort topics with the one proposed by current user first and then the others ordered by number of likes
-  const sortedTopics = topics.map((topic, index) => ({...topic, index })).sort((topicA, topicB) =>
-    (topicA.likes < topicB.likes && topicA.user !== address) ? 1 : -1
-  );
+  const sortedTopics = topics
+    .map((topic, index) => ({ ...topic, index }))
+    .sort((topicA, topicB) =>
+      topicA.likes < topicB.likes && topicA.user !== address ? 1 : -1
+    );
 
   return (
     <div className="content">
       {isLoading ? (
-        <p>In attesa...</p>
+        <p>Wait for blockchain confirmation...</p>
       ) : (
         <div>
           {sortedTopics?.map((topic) => (
-            <article className={cx("message",{"is-success": address !== topic.user, "is-link": address === topic.user})} key={topic.index}>
+            <article
+              className={cx("message", {
+                "is-success": address !== topic.user,
+                "is-link": address === topic.user,
+              })}
+              key={topic.index}
+            >
               <div className="message-body">
                 <div className="level">
                   <div className="level-left">

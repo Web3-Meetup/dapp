@@ -9,23 +9,23 @@ const Loading = () => (
       x="0px"
       y="0px"
       viewBox="0 0 100 100"
-      enable-background="new 0 0 100 100"
+      enableBackground="new 0 0 100 100"
     >
       <circle
         fill="none"
         stroke="#00d1b2"
-        stroke-width="4"
-        stroke-miterlimit="10"
+        strokeWidth="4"
+        strokeMiterlimit="10"
         cx="50"
         cy="50"
         r="48"
       />
       <line
         fill="none"
-        stroke-linecap="round"
+        strokeLinecap="round"
         stroke="#00d1b2"
-        stroke-width="4"
-        stroke-miterlimit="10"
+        strokeWidth="4"
+        strokeMiterlimit="10"
         x1="50"
         y1="50"
         x2="85"
@@ -42,10 +42,10 @@ const Loading = () => (
       </line>
       <line
         fill="none"
-        stroke-linecap="round"
+        strokeLinecap="round"
         stroke="#00d1b2"
-        stroke-width="4"
-        stroke-miterlimit="10"
+        strokeWidth="4"
+        strokeMiterlimit="10"
         x1="50"
         y1="50"
         x2="49.5"
