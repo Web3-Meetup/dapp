@@ -82,7 +82,7 @@ export const withdrawBalance = async (contract: Contract, userAddress: string) =
       from: userAddress,
     });
   }catch (e) {
-    throw Error("Cannot withdraw, contact smart contract owner!");
+    throw Error("Cannot withdraw!");
   }
 };
 

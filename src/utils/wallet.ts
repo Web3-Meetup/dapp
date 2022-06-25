@@ -25,19 +25,34 @@ interface JsonRPCError {
 /**
  * Get metamask provider
  */
-export const getWallet = () => {
+export const getWallet = () => new Promise<BaseProvider>((resolve, reject) => {
+
+  const handleEVM = () => {
+    if (window.ethereum) {
+      resolve(window.ethereum)
+    } else {
+      reject(new Error("You need Metamask!"));
+    }
+  };
+
+  // Check https://docs.metamask.io/guide/mobile-best-practices.html#the-provider-window-ethereum
   if (window.ethereum) {
-    return window.ethereum;
+    handleEVM();
   } else {
-    throw Error("You need Metamask!");
+    window.addEventListener('ethereum#initialized', handleEVM, {
+      once: true,
+    });
+    // If the event is not dispatched by the end of the timeout,
+    // the user probably doesn't have MetaMask installed.
+    setTimeout(handleEVM, 3000); // 3 seconds
   }
-};
+})
 
 /**
  * Check if current chain is Polygon
  */
 export const isPolygonChain = async () => {
-  const client = getWallet();
+  const client = await getWallet();
   try {
     const chainId = await client.request({
       method: "eth_chainId",
@@ -53,7 +68,7 @@ export const isPolygonChain = async () => {
  * Try to connect to Polygon chain and if doesn't exist add the new chain to Metamask
  */
 export const connectToPolygonChain = async () => {
-  const client = getWallet();
+  const client = await getWallet();
   try {
     // request account open mask estension
     await client.request({
