@@ -15,7 +15,7 @@ export const BLOCKCHAIN = {
 const CURRENCY = {
   name: process.env.REACT_APP_CURRENCY_NAME,
   symbol: process.env.REACT_APP_CURRENCY_SYMBOL,
-  decimals: process.env.REACT_APP_CURRENCY_DECIMALS,
+  decimals: parseInt(process.env.REACT_APP_CURRENCY_DECIMALS!),
 };
 
 interface JsonRPCError {
@@ -67,7 +67,7 @@ export const connectToPolygonChain = async () => {
     // This error code indicates that the chain has not been added to MetaMask.
     if ((e as JsonRPCError).code === 4902) {
       try {
-        return await window.ethereum.request({
+        await window.ethereum.request({
           method: "wallet_addEthereumChain",
           params: [
             {
