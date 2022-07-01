@@ -5,10 +5,13 @@ export const meetupApi = createApi({
   reducerPath: 'meetupApi',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_MEETUP_API_BASEURL }),
   endpoints: (builder) => ({
+    getMeetups: builder.query<Meetup[], void>({
+      query: () => 'meetups' 
+    }),
     getMeetupById: builder.query<Meetup, string>({
       query: (id) => `meetups/${id}`,
     }),
   }),
 })
 
-export const { useGetMeetupByIdQuery } = meetupApi
+export const { useGetMeetupByIdQuery, useGetMeetupsQuery } = meetupApi

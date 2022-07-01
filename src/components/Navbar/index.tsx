@@ -8,8 +8,8 @@ const Navbar = () => {
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
-        <a className="navbar-item" href="/">
-          <Logo width={69} height={41} />
+        <a className="navbar-item ml-3" href="/">
+          <Logo width={250} />
         </a>
       </div>
 

@@ -1,9 +1,10 @@
 import React from "react";
 import "./App.scss";
-import Content from "~/components/Content";
+import Meetup from "~/pages/Meetup";
 import Loading from "~/components/Loading";
-
 import useWeb3 from "./hooks/useWeb3";
+import { Routes, Route } from "react-router-dom";
+import { Home } from "./pages/Home";
 
 function App() {
   const { isMetamaskAvailable, connectionStatus, connectToChain } = useWeb3();
@@ -30,7 +31,15 @@ function App() {
         </button>
       )}
       {connectionStatus === "PENDING" && <Loading />}
-      {connectionStatus === "CONNECTED" && <Content />}
+      {connectionStatus === "CONNECTED" && <Routes>
+          <Route path=":meetupId" element={<Meetup />} />
+          <Route
+            path="*"
+            element={
+              <Home />
+            }
+          />
+        </Routes>}
     </div>
   );
 }

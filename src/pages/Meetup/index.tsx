@@ -7,12 +7,12 @@ import { fromWei } from "web3-utils";
 import { useGetMeetupByIdQuery } from "~/services/meetup";
 import { useParams } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import Loading from "../Loading";
+import Loading from "../../components/Loading";
 import { formatDate } from "~/utils/date";
 import Markdown from "markdown-to-jsx";
 
-const Content = () => {
-  // es: VugnTotPu_FVnqMidcLZyqmgp1kK-YIN3LodmM430UQ
+const Meetup = () => {
+  // es: 4igppoYT8nqs4UGluNMtozMKelNZx6En3MoYppnDVm4
   const { meetupId } = useParams();
 
   const { data } = useGetMeetupByIdQuery(meetupId || skipToken);
@@ -63,6 +63,11 @@ const Content = () => {
               <h1 className="title is-1">{data.title}</h1>
             </div>
           </div>
+          <div className="level-right">
+            <div className="level-item">
+              <button className="button is-large is-link" onClick={() => alert("TBD")}>Join Meetup</button>
+            </div>
+          </div>
         </div>
 
         <h2 className="subtitle">
@@ -96,4 +101,4 @@ const Content = () => {
   );
 };
 
-export default Content;
+export default Meetup;

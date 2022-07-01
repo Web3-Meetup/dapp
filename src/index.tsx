@@ -6,26 +6,14 @@ import { Provider } from "react-redux";
 import { store } from "~/store";
 import reportWebVitals from "./reportWebVitals";
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
+  BrowserRouter as Router
 } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Router>
-        <Routes>
-          <Route path=":meetupId" element={ <App />} />
-          <Route
-            path="*"
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>There's nothing here!</p>
-              </main>
-            }
-          />
-        </Routes>
+        <App />
       </Router>
     </Provider>
   </React.StrictMode>,
